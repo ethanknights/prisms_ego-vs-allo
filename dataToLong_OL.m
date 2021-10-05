@@ -1,8 +1,9 @@
-%conditionNames = {'OL','RHPER','LHFREE','LHPER'};
+
 
 outDir = 'csv'; mkdir(outDir)
 
 %% OL
+%% ========================================================================
 for s = 1:height(t_wide); ID = t_wide.ID{s}; ID_num = t_wide.ID_num(s);
   
   tmpD = tmpD_OL{s};
@@ -34,7 +35,7 @@ for s = 1:height(t_wide); ID = t_wide.ID{s}; ID_num = t_wide.ID_num(s);
     for v = 1:length(list_vars); varStr = list_vars{v};
       colIdx = strcmp(tmpH,varStr);
       outCol = v;
-      genNewRow %newRow_L, %newRow_R, %newRow_R
+      genNewRow_OL %newRow_L, %newRow_R, %newRow_R
     end
   
     tmpT = [newRow_L;newRow_C;newRow_R];

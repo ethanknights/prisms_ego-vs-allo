@@ -1,5 +1,6 @@
-clear; close all
-t = readtable('csv/data_openloop.csv');
+function plot_OL(t)
+
+close all
 
 subs = unique(t.subNum);
 nSubs = length(subs);
@@ -8,7 +9,7 @@ cMapCol = lbmap(2,'RedBlue');
 %cMapCol = [0 1 0; 0 1 1]; %green L, Blue R
 
 
-figure
+figure('position',[0,0,1000,1000])
 
 for s = 1:nSubs
   
@@ -45,5 +46,7 @@ ylabel('Endpoint Error (mm)')
 
 set(gca,'box','off','color','none','TickDir','out','fontsize',18);
 
+%export_fig 'images/OL_matlab.tiff' -transparent
+fig2svg('images/OL_matlab.svg')
 
 

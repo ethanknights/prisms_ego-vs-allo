@@ -1,8 +1,5 @@
-
-
-%%  Grab Raw data
-%% Note - currently dropping subj with missing tp2 OL (for simplicity)
-% see   %'L_11_missOL';
+%% Pro/Antipoint
+%% Note - Task analysis DOES include L-11
 %% ========================================================================
 clear
 
@@ -25,7 +22,7 @@ fN_L = {'L_2';
   'L_8';
   'L_9';
   'L_10';
-  %'L_11_missOL';
+  'L_11'; %missing 1 OL
   'L_12';
   'L_13';
   'L_14';
@@ -76,14 +73,14 @@ t_wide.Properties.VariableNames = {'subNum','ID','ID_num','PrismGroup'};
 
 %% Read 2014 .xlsx files 
 %% (.txt file format changes too much, to re-extract without eprime access)
-prestoredfN = 'rawData.mat';
+prestoredfN = 'rawData_PP_AP.mat';
 
 if ~exist(prestoredfN) %if first time
   for s = 1:height(t_wide); ID = t_wide.ID{s}; ID_num = t_wide.ID_num(s);
     
     %% OL
-    fN = fullfile(rawDir,ID,sprintf('Openloop-%d-1+2+3+4+5.xlsx',ID_num));
-    [~,~,tmpD_OL{s}] = xlsread(fN,sprintf('Openloop-%d-1',ID_num));
+    %fN = fullfile(rawDir,ID,sprintf('Openloop-%d-1+2+3+4+5.xlsx',ID_num));
+    %[~,~,tmpD_OL{s}] = xlsread(fN,sprintf('Openloop-%d-1',ID_num));
     %% PP
     fN = fullfile(rawDir,ID,sprintf('Pro-Pointing-%d-1+2.xlsx',ID_num));
     [~,~,tmpD_PP{s}] = xlsread(fN,sprintf('Pro-Pointing-%d-1',ID_num));
@@ -92,6 +89,6 @@ if ~exist(prestoredfN) %if first time
     [~,~,tmpD_AP{s}] = xlsread(fN,sprintf('Anti-Pointing-%d-1',ID_num));
     
   end
-  save(prestoredfN,'tmpD_OL','tmpD_PP','tmpD_AP','t_wide'); else
-  load(prestoredfN,'tmpD_OL','tmpD_PP','tmpD_AP','t_wide'); end
+  save(prestoredfN,'tmpD_PP','tmpD_AP','t_wide'); else
+  load(prestoredfN,'tmpD_PP','tmpD_AP','t_wide'); end
   
