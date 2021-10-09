@@ -95,7 +95,8 @@ im = table2array( t_PP(:,[8:11]))
 figure, imagesc(im); colormap('jet') %ID, PrismGroup, Session, Target
 im = table2array( t_PP(:,[9:11]))
 figure, imagesc(im); colormap('jet') % PrismGroup, Session, Target
+close all
 
-writetable(t_PP,fullfile(outDir,'data_propointing.csv'))
+writetable(t_PP,fullfile(outDir,'rawData_propointing.csv'))
 
  

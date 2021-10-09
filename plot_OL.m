@@ -5,7 +5,7 @@ close all
 subs = unique(t.subNum);
 nSubs = length(subs);
 %pGColour = {'red','blue'};
-cMapCol = lbmap(2,'RedBlue');
+cMapCol = lbmap(2,'RedBlue'); %red left, blue Right
 %cMapCol = [0 1 0; 0 1 1]; %green L, Blue R
 
 

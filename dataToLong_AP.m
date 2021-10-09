@@ -95,7 +95,9 @@ im = table2array( t_AP(:,[8:11]))
 figure, imagesc(im); colormap('jet') %ID, PrismGroup, Session, Target
 im = table2array( t_AP(:,[9:11]))
 figure, imagesc(im); colormap('jet') % PrismGroup, Session, Target
+close all
 
-writetable(t_AP,fullfile(outDir,'data_antipointing.csv'))
+writetable(t_AP,fullfile(outDir,'rawData_antipointing.csv'))
+
 
  

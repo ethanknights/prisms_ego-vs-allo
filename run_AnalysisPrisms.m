@@ -1,7 +1,7 @@
 %% Purpose: Collect Prisms Data
 %% ?Put in long format for R ANVOA?
 
-%%Preliminaries:
+%% Preliminaries:
 % - Have Preprocessed Data directory. 
 %% ========================================================================
 mkdir images
@@ -15,7 +15,7 @@ set(0, 'DefaultFigureRenderer', 'openGL');
 clear; load rawData_OL.mat; 
 dataToLong_OL;  %out: csv/data_openloop.csv
 
-clear
+clear; close all
 t = readtable('csv/data_openloop.csv');
 plot_OL(t);
 

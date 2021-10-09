@@ -80,7 +80,33 @@ im = table2array( t_OL(:,[8:11]))
 figure, imagesc(im); colormap('jet') %ID, PrismGroup, Session, Target
 im = table2array( t_OL(:,[9:11]))
 figure, imagesc(im); colormap('jet') % PrismGroup, Session, Target
+close all
+
+
+%% Absolute Error
+%% ------------------------------------------------------------------------
+t_OL.AbsErr = abs(t_OL.("Error in mm"));
+
+%% Data exclusions
+%% ------------------------------------------------------------------------
+list_subs = unique(t_OL.ID);
+nSubs = length(list_subs);
+
+% 1. rm slow/anticipatory (most are non-registered touch-screen response) +/- 3stdev 
+[t_OL,uStdev,lStdev] = flag_outliers(t_OL,list_subs,nSubs,'RT'); %new column t.flag_RT
+plot_scatter(t_OL,list_subs,nSubs,'RT_beforeDataExclusion',t_OL.MouseClick1RT,60);
+
+t_OL.MouseClick1RT(t_OL.flag_RT) = nan; %drop outliers
+t_OL.AbsErr(t_OL.flag_RT) = nan; %drop outliers
+
+plot_scatter(t_OL,list_subs,nSubs,'RT',t_OL.MouseClick1RT,60);
+
+%leave errors in for OL (but lets look if there's any bad subjects..)
+[check,uStdev,lStdev]  = flag_outliers(t_OL,list_subs,nSubs,'AbsAcc'); %new column t.flag_accuracy
+plot_scatter(t_OL,list_subs,nSubs,'AbsAcc',t_OL.AbsErr,60);
 
 writetable(t_OL,fullfile(outDir,'data_openloop.csv'))
+
+
 
  
