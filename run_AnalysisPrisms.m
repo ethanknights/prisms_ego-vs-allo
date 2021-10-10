@@ -6,8 +6,8 @@
 %% ========================================================================
 mkdir images
 clear
-set(0, 'DefaultFigureRenderer', 'painters'); %linux
-%set(0, 'DefaultFigureRenderer', 'openGL'); %mac
+%set(0, 'DefaultFigureRenderer', 'painters'); %linux
+set(0, 'DefaultFigureRenderer', 'openGL'); %mac
 
 %% OPEN LOOP
 %% ========================================================================
@@ -15,13 +15,13 @@ set(0, 'DefaultFigureRenderer', 'painters'); %linux
 clear; load rawData_OL.mat; 
 writeCsv_OL;
 
-plot_OL('data_openloop_wide_Errorinmm_mean',[-80,80]);
+plot_OL_versionBaselineLine('data_openloop_wide_Errorinmm_mean',[-80,80]);
 export_fig 'images/data_openloop_wide_Errorinmm_mean.tiff' -transparent
 
 plot_OL('data_openloop_wide_Errorinmm_absolute_mean',[-1,80]);
 export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
 
-plot_OL('data_openloop_wide_MouseClick1RT_mean',[0,1500]);
+plot_OL('data_openloop_wide_MouseClick1RT_mean',[250,1500]);
 export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
 
 

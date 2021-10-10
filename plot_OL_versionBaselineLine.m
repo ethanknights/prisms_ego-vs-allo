@@ -19,7 +19,7 @@ for s = 1:nSubs
   d = table2array(t(s,3:end));
   h = plot(d,...
     '-o','Color',cMapCol(pG,:),...
-    'LineWidth',1,'LineStyle','--', ...
+    'LineWidth',2,'LineStyle','--', ...
     'MarkerSize',15,'MarkerFaceColor',cMapCol(pG,:),'MarkerEdgeColor','black');
   setMarkerColor(h,cMapCol(pG,:),alphaVal);
   pause(0.1)
@@ -35,5 +35,9 @@ xticklabels({'Pre-Sham','Post-Sham','Pre-Prism','Post-Prism','Late-Prism'}); xti
 tmpLim = ylim; ylim([tmpLim(1) - 0, tmpLim(2) + 0]); ylabel('Endpoint Error (mm)')
 set(gca,'box','off','color','none','TickDir','out','fontsize',18);
 ax = gca; ax.XColor = 'black'; ax.YColor = 'black'; ax.LineWidth = 2;
+
+%% Extra: baseline line
+line([0:23],[zeros(24)],...
+  'col', [0,0,0], 'LineWidth', 2,'LineStyle','--')
 
 fig2svg(sprintf('images/%s.svg',fN))
