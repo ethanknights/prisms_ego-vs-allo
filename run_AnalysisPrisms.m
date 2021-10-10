@@ -6,18 +6,24 @@
 %% ========================================================================
 mkdir images
 clear
-%set(0, 'DefaultFigureRenderer', 'painters');
-set(0, 'DefaultFigureRenderer', 'openGL');
+set(0, 'DefaultFigureRenderer', 'painters'); %linux
+%set(0, 'DefaultFigureRenderer', 'openGL'); %mac
 
 %% OPEN LOOP
 %% ========================================================================
 %grabRawData_OL;  %out: rawData_OL.mat
 clear; load rawData_OL.mat; 
-dataToLong_OL;  %out: csv/data_openloop.csv
+writeCsv_OL;
 
-clear; close all
-t = readtable('csv/data_openloop.csv');
-plot_OL(t);
+plot_OL('data_openloop_wide_Errorinmm_mean',[-80,80]);
+export_fig 'images/data_openloop_wide_Errorinmm_mean.tiff' -transparent
+
+plot_OL('data_openloop_wide_Errorinmm_absolute_mean',[-1,80]);
+export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
+
+plot_OL('data_openloop_wide_MouseClick1RT_mean',[0,1500]);
+export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
+
 
 %% Pro-/Anti-Point
 %% ========================================================================

@@ -1,4 +1,8 @@
-
+%% Purpose: Parse matlab raw data files into 
+%% Long format data (t_OL)
+%% Perform data exclusions
+%% Write Long format data (csv/data_openloop_long.csv)
+%% convert to wide format and write (csv/data_openloop_wide.csv)
 
 outDir = 'csv'; mkdir(outDir)
 
@@ -31,6 +35,16 @@ for s = 1:height(t_wide); ID = t_wide.ID{s}; ID_num = t_wide.ID_num(s);
       'MouseClick1RT'... %MT actually
       %RT never measured in OpenLoop
       };
+    
+     list_vars2 = {... %% matlab2019 udpated table name rules
+      'Errorinmm',...
+      'MouseClick1X',...
+      'MouseClick1Y',...
+      'PerfectX',...
+      'MouseClick1RT'... %MT actually
+      %RT never measured in OpenLoop
+      };
+    
     newRow_L = [];    newRow_C = [];    newRow_R = [];
     for v = 1:length(list_vars); varStr = list_vars{v};
       colIdx = strcmp(tmpH,varStr);
@@ -40,7 +54,7 @@ for s = 1:height(t_wide); ID = t_wide.ID{s}; ID_num = t_wide.ID_num(s);
   
     tmpT = [newRow_L;newRow_C;newRow_R];
     tmpT = array2table(tmpT);
-    tmpT.Properties.VariableNames = list_vars;
+    tmpT.Properties.VariableNames = list_vars2;
     
     %% condition info (long format)
     tmpT.subNum =         repmat(t_wide.subNum(s),height(tmpT),1);
@@ -85,11 +99,11 @@ close all
 
 %% Absolute Error
 %% ------------------------------------------------------------------------
-t_OL.AbsErr = abs(t_OL.("Error in mm"));
+t_OL.AbsErr = abs(t_OL.("Errorinmm"));
 
 %% Data exclusions
 %% ------------------------------------------------------------------------
-list_subs = unique(t_OL.ID);
+list_subs = sort_nat(unique(t_OL.ID));
 nSubs = length(list_subs);
 
 % 1. rm slow/anticipatory (most are non-registered touch-screen response) +/- 3stdev 
@@ -101,12 +115,70 @@ t_OL.AbsErr(t_OL.flag_RT) = nan; %drop outliers
 
 plot_scatter(t_OL,list_subs,nSubs,'RT',t_OL.MouseClick1RT,60);
 
-%leave errors in for OL (but lets look if there's any bad subjects..)
+%leave errors in for OL (but check for bad subjects..)
 [check,uStdev,lStdev]  = flag_outliers(t_OL,list_subs,nSubs,'AbsAcc'); %new column t.flag_accuracy
 plot_scatter(t_OL,list_subs,nSubs,'AbsAcc',t_OL.AbsErr,60);
+close all
 
-writetable(t_OL,fullfile(outDir,'data_openloop.csv'))
+%% Write long format
+%% ------------------------------------------------------------------------
+writetable(t_OL,fullfile(outDir,'data_openloop_long.csv'))
 
+%% Convert to wide format
+%% ------------------------------------------------------------------------
+t = readtable(fullfile(outDir,'data_openloop_long.csv'))
+%ignore target Side of space + Eccentricity (only for task difficulty)
+list_vars = {... %% matlab2019 udpated table name rules
+'Errorinmm',...
+'MouseClick1X',...
+'MouseClick1Y',...
+'MouseClick1RT'... %MT actually
+};
+opStr = 'mean';
 
+statarray = grpstats(t,{'ID_num','Session'},opStr,'DataVars',list_vars);
 
- 
+for v = 1:length(list_vars); varStr = list_vars{v}
+  
+  t = statarray(:,...
+    [1,2,3, find(strcmp(sprintf('%s_%s',opStr,varStr)...
+    ,statarray.Properties.VariableNames))]...
+    );
+  tmpH = t.Properties.VariableNames;
+  
+  newT = array2table(nan(nSubs,7)); %5 sess + 1 ID + 1 Prism Group
+  newT.Properties.VariableNames = {'ID_num', ...
+    'PrismGroup',...
+    sprintf('Session1_%s',tmpH{end}),...
+    sprintf('Session2_%s',tmpH{end}),...
+    sprintf('Session3_%s',tmpH{end}),...
+    sprintf('Session4_%s',tmpH{end}),...
+    sprintf('Session5_%s',tmpH{end}),...
+    };
+    
+  list_ID_num = unique(t.ID_num);
+  for s = 1:nSubs; ID_num = list_ID_num(s); idx = find(ID_num == t.ID_num);
+    
+    newT(s,1) = array2table(ID_num);
+    newT(s,2) = array2table(t_wide.PrismGroup(find(ID_num == t_wide.ID_num)));
+    for sess = 1:5
+      newT(s,2+sess) = t(idx(sess),end); 
+    end
+
+  end
+    
+  writetable(newT,fullfile(outDir,['data_openloop_wide_',varStr,'_',opStr,'.csv']));
+
+end
+
+%% Add AbsErr
+t = readtable('csv/data_openloop_wide_Errorinmm_mean.csv');
+t.Session1_mean_Errorinmm = abs(t.Session1_mean_Errorinmm);
+t.Session2_mean_Errorinmm = abs(t.Session2_mean_Errorinmm);
+t.Session3_mean_Errorinmm = abs(t.Session3_mean_Errorinmm);
+t.Session4_mean_Errorinmm = abs(t.Session4_mean_Errorinmm);
+t.Session5_mean_Errorinmm = abs(t.Session5_mean_Errorinmm);
+
+writetable(t,fullfile(outDir,'data_openloop_wide_Errorinmm_absolute_mean.csv'));
+
+close all
