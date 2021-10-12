@@ -1,13 +1,20 @@
-%% Purpose: Collect Prisms Data
-%% ?Put in long format for R ANVOA?
+%% Purpose: Collect Prisms Data & plot
+%%
+%% Notes:
+%% - 'RT' Refers to MT.
+%%
+%% Ethan Knights
+%% ========================================================================
 
 %% Preliminaries:
-% - Have Preprocessed Data directory. 
 %% ========================================================================
+%% - Ensure preprocessed .xls data directory is present (osf/owncloud). 
+%% This dir is set in writeCSv_OL/PP/AP.m
+
 mkdir images
 clear
-%set(0, 'DefaultFigureRenderer', 'painters'); %linux
-set(0, 'DefaultFigureRenderer', 'openGL'); %mac
+set(0, 'DefaultFigureRenderer', 'painters'); %linux
+%set(0, 'DefaultFigureRenderer', 'openGL'); %mac
 
 %% OPEN LOOP
 %% ========================================================================
@@ -15,12 +22,15 @@ set(0, 'DefaultFigureRenderer', 'openGL'); %mac
 clear; load rawData_OL.mat; 
 writeCsv_OL;
 
-plot_OL_versionBaselineLine('data_openloop_wide_Errorinmm_mean',[-80,80]);
+%% directional error plot
+plot_OL('data_openloop_wide_Errorinmm_mean',[-80,80]);
 export_fig 'images/data_openloop_wide_Errorinmm_mean.tiff' -transparent
 
+%% absolute error plot
 plot_OL('data_openloop_wide_Errorinmm_absolute_mean',[-1,80]);
 export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
 
+%% MT plot
 plot_OL('data_openloop_wide_MouseClick1RT_mean',[250,1500]);
 export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
 

@@ -113,7 +113,7 @@ plot_scatter(t_OL,list_subs,nSubs,'RT_beforeDataExclusion',t_OL.MouseClick1RT,60
 t_OL.MouseClick1RT(t_OL.flag_RT) = nan; %drop outliers
 t_OL.AbsErr(t_OL.flag_RT) = nan; %drop outliers
 
-plot_scatter(t_OL,list_subs,nSubs,'RT',t_OL.MouseClick1RT,60);
+plot_descriptives_OL_scatter(t_OL,list_subs,nSubs,'RT',t_OL.MouseClick1RT,60);
 
 %leave errors in for OL (but check for bad subjects..)
 [check,uStdev,lStdev]  = flag_outliers(t_OL,list_subs,nSubs,'AbsAcc'); %new column t.flag_accuracy

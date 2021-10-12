@@ -1,4 +1,4 @@
-function plot_scatter(t,list_subs,nSubs,titleStr,variable,nTrials)
+function plot_descriptives_OL_scatter(t,list_subs,nSubs,titleStr,variable,nTrials)
 %nSubs = 3
 
 
