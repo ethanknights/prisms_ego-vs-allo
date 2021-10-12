@@ -16,22 +16,46 @@ clear
 set(0, 'DefaultFigureRenderer', 'painters'); %linux
 %set(0, 'DefaultFigureRenderer', 'openGL'); %mac
 
-%% OPEN LOOP
+%% Open Loop
 %% ========================================================================
 %grabRawData_OL;  %out: rawData_OL.mat
 clear; load rawData_OL.mat; 
 writeCsv_OL;
 
-%% directional error plot
-plot_OL('data_openloop_wide_Errorinmm_mean',[-80,80]);
+%% Plots
+%% ------------------------------------------------------------------------
+%% directional error
+% scatter
+plot_OL_scatter('data_openloop_wide_Errorinmm_mean',[-80,80],true);
 export_fig 'images/data_openloop_wide_Errorinmm_mean.tiff' -transparent
+% errorbar
+plot_OL_errorBar('data_openloop_wide_Errorinmm_mean',[-80,80]);
+export_fig 'images/data_openloop_wide_Errorinmm_mean_ErrorBar.tiff' -transparent
+% line-scatter-errorbar (not using)
+plot_OL_scatterANDerrorBar('data_openloop_wide_Errorinmm_mean',[-80,80],true);
+export_fig 'images/data_openloop_wide_Errorinmm_mean_scatterANDerrorBar.tiff' -transparent
 
-%% absolute error plot
-plot_OL('data_openloop_wide_Errorinmm_absolute_mean',[-1,80]);
+
+%% absolute error
+% scatter
+plot_OL_scatter('data_openloop_wide_Errorinmm_absolute_mean',[-1,80],false);
 export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
+% errorbar
+plot_OL_errorBar('data_openloop_wide_Errorinmm_absolute_mean',[-1,80]);
+export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
+% line-scatter-errorbar (not using)
+plot_OL_scatterANDerrorBar('data_openloop_wide_Errorinmm_absolute_mean',[-1,80],false);
+export_fig 'images/data_openloop_wide_Errorinmm_mean_scatterANDerrorBar.tiff' -transparent
 
 %% MT plot
-plot_OL('data_openloop_wide_MouseClick1RT_mean',[250,1500]);
+% scatter
+plot_OL_scatter('data_openloop_wide_MouseClick1RT_mean',[250,1500],false);
+export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
+% errorbar
+plot_OL_errorBar('data_openloop_wide_MouseClick1RT_mean',[500,1000]);
+export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
+% line-scatter-errorbar (not using)
+plot_OL_scatterANDerrorBar('data_openloop_wide_MouseClick1RT_mean',[250,1500],false);
 export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
 
 
