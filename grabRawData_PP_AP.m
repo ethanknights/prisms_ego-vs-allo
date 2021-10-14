@@ -30,7 +30,7 @@ fN_L = {'L_2';
   'L_16'};
 
 fN_R = ... %{'R_4'; %consistently VERY slow
-  'R_5';
+  {'R_5';
   'R_17';
   'R_18';
   'R_19';

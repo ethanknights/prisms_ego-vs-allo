@@ -199,7 +199,7 @@ for v = 1:length(list_vars); varStr = list_vars{v};
 
   end
     
-  writetable(newT,fullfile(outDir,['data_openloop_wide_',varStr,'_',opStr,'.csv']));
+  writetable(newT,fullfile(outDir,['data_propointing_wide_',varStr,'_',opStr,'.csv']));
 
 end
 
