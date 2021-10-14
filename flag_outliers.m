@@ -2,20 +2,20 @@ function [t,uStdev,lStdev] = flag_outliers(t,list_subs,nSubs,varStr)
 
 t.flag = repmat(false,height(t),1);
 
-for s = 1:nSubs; ID = list_subs{s}
+for s = 1:nSubs; ID = list_subs{s};
   idx = find(strcmp(ID,t.ID));
   
   switch varStr
     case 'RT'
-        meanVal = mean(t.MouseClick1RT(idx));
-        stdevVal = std(t.MouseClick1RT(idx));
+        meanVal = nanmean(t.MouseClick1RT(idx));
+        stdevVal = nanstd(t.MouseClick1RT(idx));
     case 'AbsAcc'
-      meanVal = mean(t.AbsErr(idx));
-      stdevVal = std(t.AbsErr(idx));
+      meanVal = nanmean(t.AbsErr(idx));
+      stdevVal = nanstd(t.AbsErr(idx));
   end
   
-  uStdev(s) = round(meanVal + (stdevVal * 4)); sprintf('Upper Limit - %g\n',uStdev(s));
-  lStdev(s) = round(meanVal - (stdevVal * 4)); sprintf('Upper Limit - %g\n',lStdev(s));
+  uStdev(s) = round(meanVal + (stdevVal * 2)); sprintf('%s Upper Limit - %g\n',varStr, uStdev(s));
+  lStdev(s) = round(meanVal - (stdevVal * 2)); sprintf('%s Lower Limit - %g\n',varStr, lStdev(s));
   
   switch varStr
     case 'RT'
@@ -25,7 +25,8 @@ for s = 1:nSubs; ID = list_subs{s}
   end
   t.flag(idx(flagIdx)) = true;
 end
-sprintf('nFlagged = %d ( %.2f percent)', ...
+sprintf('%s nFlagged = %d ( %.2f percent)', ...
+    varStr,...
     length(find(t.flag)),...
     100 / height(t) * length(find(t.flag))...
     )

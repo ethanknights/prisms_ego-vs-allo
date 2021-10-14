@@ -29,7 +29,7 @@ fN_L = {'L_2';
   'L_15';
   'L_16'};
 
-fN_R = {'R_4';
+fN_R = ... %{'R_4'; %consistently VERY slow
   'R_5';
   'R_17';
   'R_18';
@@ -89,6 +89,8 @@ if ~exist(prestoredfN) %if first time
     [~,~,tmpD_AP{s}] = xlsread(fN,sprintf('Anti-Pointing-%d-1',ID_num));
     
   end
-  save(prestoredfN,'tmpD_PP','tmpD_AP','t_wide'); else
-  load(prestoredfN,'tmpD_PP','tmpD_AP','t_wide'); end
+  save(prestoredfN,'tmpD_PP','tmpD_AP','t_wide');
+else
+  load(prestoredfN,'tmpD_PP','tmpD_AP','t_wide');
+end
   

@@ -35,14 +35,13 @@ export_fig 'images/data_openloop_wide_Errorinmm_mean_ErrorBar.tiff' -transparent
 plot_OL_scatterANDerrorBar('data_openloop_wide_Errorinmm_mean',[-80,80],true);
 export_fig 'images/data_openloop_wide_Errorinmm_mean_scatterANDerrorBar.tiff' -transparent
 
-
 %% absolute error
 % scatter
 plot_OL_scatter('data_openloop_wide_Errorinmm_absolute_mean',[-1,80],false);
 export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
 % errorbar
-plot_OL_errorBar('data_openloop_wide_Errorinmm_absolute_mean',[-1,80]);
-export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
+plot_OL_errorBar('data_openloop_wide_Errorinmm_absolute_mean',[-1,60]);
+export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean_ErrorBar.tiff' -transparent
 % line-scatter-errorbar (not using)
 plot_OL_scatterANDerrorBar('data_openloop_wide_Errorinmm_absolute_mean',[-1,80],false);
 export_fig 'images/data_openloop_wide_Errorinmm_mean_scatterANDerrorBar.tiff' -transparent
@@ -53,18 +52,18 @@ plot_OL_scatter('data_openloop_wide_MouseClick1RT_mean',[250,1500],false);
 export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
 % errorbar
 plot_OL_errorBar('data_openloop_wide_MouseClick1RT_mean',[500,1000]);
-export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
+export_fig 'images/data_openloop_wide_MouseClick1RT_mean_ErrorBar.tiff' -transparent
 % line-scatter-errorbar (not using)
 plot_OL_scatterANDerrorBar('data_openloop_wide_MouseClick1RT_mean',[250,1500],false);
-export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
+export_fig 'images/data_openloop_wide_MouseClick1RT_mean_scatterANDerrorBar.tiff' -transparent
 
 
 %% Pro-/Anti-Point
 %% ========================================================================
 %grabRawData_PP_AP;  %out: 'rawData.mat'
 clear; load rawData_PP_AP.mat; 
-dataToLong_PP;  %out: t_PP + csv/data_propointing.csv
-dataToLong_AP;  %out: t_AP + csv/data_antipointing.csv
+writeCsv_PP;  %out: t_PP + csv/data_propointing.csv
+writeCsv_AP;  %out: t_AP + csv/data_antipointing.csv
 
 clear
 t_PP = readtable('csv/data_propointing.csv');

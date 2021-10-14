@@ -1,13 +1,13 @@
-function plot_descriptives_OL_scatter(t,list_subs,nSubs,titleStr,variable,nTrials)
+function plot_descriptives_scatter(t,list_subs,nSubs,titleStr,variable,nTrials,taskStr)
 %nSubs = 3
 
 
 yLim = [min(variable),max(variable)];
 xLim = [0,(nTrials+1)];
 
-if strcmp(titleStr,'AbsAcc')
+if logical(contain('AbsAcc',{titleStr}))
   yLim = [min(variable),max(variable)+10];
-elseif contains(titleStr,'RT')
+elseif logical(contain('RT',{titleStr}))
   yLim = [min(variable)-250,max(variable)+250];
 end
 
@@ -22,8 +22,8 @@ for s = 1:nSubs; ID = list_subs{s}; idx = find(strcmp(ID,t.ID));
   ylim(yLim); xlim(xLim);
 end
 sgtitle(titleStr)
-%fig2svg(sprintf('images/OL_subplotScatter_%s_matlab.svg',titleStr))
-saveas(gca,sprintf('images/OL_subplotScatter_%s_matlab.svg',titleStr))
+%fig2svg(sprintf('images/%s_subplotScatter_%s.svg',taskStr,titleStr)) %subplot breaks
+saveas(gca,sprintf('images/%s_subplotScatter_%s.png',taskStr,titleStr))
 
 %group scatter
 figure('position',[0,0,1000,1000])
@@ -39,5 +39,12 @@ xlabel('trialNumber');
 ylabel(titleStr);
 ylim(yLim); xlim(xLim);
 title(titleStr)
-fig2svg(sprintf('images/OL_groupScatter_%s_matlab.svg',titleStr))
+fig2svg(sprintf('images/%s_groupScatter_%s.svg',taskStr,titleStr))
 
+% 
+% pd = fitdist(variable,'Normal');
+% x_values = min(variable):100:max(variable);%not sure what step to use
+% y = pdf(pd,x_values);
+% figure,plot(x_values,y,'LineWidth',2);
+% hold on;
+% histogram(variable,30);
