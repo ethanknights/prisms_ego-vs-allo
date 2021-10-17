@@ -107,7 +107,7 @@ t = t_OL;
 list_subs = sort_nat(unique(t.ID));
 nSubs = length(list_subs);
 
-% 1. rm slow/anticipatory (most are non-registered touch-screen response) +/- 4stdev
+% 1. rm slow/anticipatory (most are non-registered touch-screen response) +/- 2stdev
 close all
 %identify outliers
 [t] = flag_outliers(t,list_subs,nSubs,'RT'); %new column t.flag_RT
