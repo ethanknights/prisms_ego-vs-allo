@@ -51,7 +51,7 @@ export_fig 'images/data_openloop_wide_Errorinmm_mean_scatterANDerrorBar.tiff' -t
 plot_OL_scatter('data_openloop_wide_MouseClick1RT_mean',[250,1500],false);
 export_fig 'images/data_openloop_wide_MouseClick1RT_mean.tiff' -transparent
 % errorbar
-plot_OL_errorBar('data_openloop_wide_MouseClick1RT_mean',[500,1000]);
+plot_OL_errorBar('data_openloop_wide_MouseClick1RT_mean',[400,900]);
 export_fig 'images/data_openloop_wide_MouseClick1RT_mean_ErrorBar.tiff' -transparent
 % line-scatter-errorbar (not using)
 plot_OL_scatterANDerrorBar('data_openloop_wide_MouseClick1RT_mean',[250,1500],false);
@@ -63,6 +63,7 @@ export_fig 'images/data_openloop_wide_MouseClick1RT_mean_scatterANDerrorBar.tiff
 %grabRawData_PP_AP;  %out: 'rawData.mat'
 clear; load rawData_PP_AP.mat; 
 writeCsv_PP;  %out: t_PP + csv/data_propointing.csv
+clear; load rawData_PP_AP.mat; 
 writeCsv_AP;  %out: t_AP + csv/data_antipointing.csv
 
 clear

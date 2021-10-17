@@ -110,7 +110,7 @@ nSubs = length(list_subs);
 % 1. rm slow/anticipatory (most are non-registered touch-screen response) +/- 4stdev
 close all
 %identify outliers
-[t,uStdev,lStdev] = flag_outliers(t,list_subs,nSubs,'RT'); %new column t.flag_RT
+[t] = flag_outliers(t,list_subs,nSubs,'RT'); %new column t.flag_RT
 %plot with outliers
 plot_descriptives_scatter(t,list_subs,nSubs,...
   'RT_beforeDataExclusion',t.MouseClick1RT,60,'task-OL');
@@ -125,7 +125,7 @@ plot_descriptives_scatter(t,list_subs,nSubs,...
 %2. leave errors in for OL (but check for bad subjects..)
 close all
 %identify outliers
-[check,uStdev,lStdev]  = flag_outliers(t,list_subs,nSubs,'AbsAcc'); %new column t.flag_accuracy
+[check]  = flag_outliers(t,list_subs,nSubs,'AbsAcc'); %new column t.flag_accuracy
 %plot with outliers
 plot_descriptives_scatter(t,list_subs,nSubs,...
   'AbsErr',t.AbsErr,60,'task-OL');

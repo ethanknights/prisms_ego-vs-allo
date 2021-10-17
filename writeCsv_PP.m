@@ -207,9 +207,6 @@ end
 t = readtable('csv/data_propointing_wide_Errorinmm_mean.csv');
 t.Session1_mean_Errorinmm = abs(t.Session1_mean_Errorinmm);
 t.Session2_mean_Errorinmm = abs(t.Session2_mean_Errorinmm);
-t.Session3_mean_Errorinmm = abs(t.Session3_mean_Errorinmm);
-t.Session4_mean_Errorinmm = abs(t.Session4_mean_Errorinmm);
-t.Session5_mean_Errorinmm = abs(t.Session5_mean_Errorinmm);
 
 writetable(t,fullfile(outDir,'data_propointing_wide_Errorinmm_absolute_mean.csv'));
 

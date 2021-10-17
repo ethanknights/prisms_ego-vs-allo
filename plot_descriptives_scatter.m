@@ -25,23 +25,24 @@ sgtitle(titleStr)
 %fig2svg(sprintf('images/%s_subplotScatter_%s.svg',taskStr,titleStr)) %subplot breaks
 saveas(gca,sprintf('images/%s_subplotScatter_%s.png',taskStr,titleStr))
 
-%group scatter
-figure('position',[0,0,1000,1000])
-cMapCol = lbmap(nSubs,'RedBlue');
-for s = 1:nSubs; ID = list_subs{s}; idx = find(strcmp(ID,t.ID));
-  
-  plot([find(idx)],variable(idx),...
-    'o','Color',cMapCol(s,:), ...
-    'MarkerSize',12,'MarkerFaceColor',cMapCol(s,:),'MarkerEdgeColor','black')
-  hold on
-end
-xlabel('trialNumber');
-ylabel(titleStr);
-ylim(yLim); xlim(xLim);
-title(titleStr)
-fig2svg(sprintf('images/%s_groupScatter_%s.svg',taskStr,titleStr))
+%% useful but saving time
+% %group scatter
+% figure('position',[0,0,1000,1000])
+% cMapCol = lbmap(nSubs,'RedBlue');
+% for s = 1:nSubs; ID = list_subs{s}; idx = find(strcmp(ID,t.ID));
+%   
+%   plot([find(idx)],variable(idx),...
+%     'o','Color',cMapCol(s,:), ...
+%     'MarkerSize',12,'MarkerFaceColor',cMapCol(s,:),'MarkerEdgeColor','black')
+%   hold on
+% end
+% xlabel('trialNumber');
+% ylabel(titleStr);
+% ylim(yLim); xlim(xLim);
+% title(titleStr)
+% fig2svg(sprintf('images/%s_groupScatter_%s.svg',taskStr,titleStr))
 
-% 
+%% not useful
 % pd = fitdist(variable,'Normal');
 % x_values = min(variable):100:max(variable);%not sure what step to use
 % y = pdf(pd,x_values);

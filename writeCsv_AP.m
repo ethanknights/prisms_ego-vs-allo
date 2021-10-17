@@ -123,19 +123,19 @@ close all
 [t,uStdev,lStdev] = flag_outliers(t,list_subs,nSubs,'RT'); %new column t.flag_RT
 %plot with outliers
 plot_descriptives_scatter(t,list_subs,nSubs,...
-  'RT_beforeDataExclusion',t.MouseClick1RT,60,'task-PP');
+  'RT_beforeDataExclusion',t.MouseClick1RT,60,'task-AP');
 %drop outliers
 t.MouseClick1RT(t.flag_RT) = nan;
 t.AbsErr(t.flag_RT) = nan;
 %plot without outliers
 plot_descriptives_scatter(t,list_subs,nSubs,...
-  'RT',t.MouseClick1RT,60,'task-PP'); %R_4 really slow
+  'RT',t.MouseClick1RT,60,'task-AP'); %R_4 really slow
 
 %2. leave errors in for error stdev (but check for bad subjects..)
 close all
 %plot with outliers
 plot_descriptives_scatter(t,list_subs,nSubs,...
-  'AbsErr',t.AbsErr,60,'task-PP'); %R_4 really weird behaviour slow considerr emoving
+  'AbsErr',t.AbsErr,60,'task-AP'); %R_4 really weird behaviour slow considerr emoving
 %identify outliers
 [check,uStdev,lStdev] = flag_outliers(t,list_subs,nSubs,'AbsAcc'); %new column t.flag_accuracy
 
@@ -145,23 +145,23 @@ close all
 [t] = flag_outliers_sideofspace(t,list_subs,nSubs,'AbsAcc'); %new column t.flag_accuracy_sideofspace
 %plot with outliers
 plot_descriptives_scatter(t,list_subs,nSubs,...
-  'AbsErr_beforeDataExclusion',t.AbsErr,60,'task-PP');
+  'AbsErr_beforeDataExclusion',t.AbsErr,60,'task-AP');
 %drop outliers
 t.MouseClick1RT(t.flag_AbsAcc_sideofspace) = nan;
 t.AbsErr(t.flag_AbsAcc_sideofspace) = nan;
 %plot without outliers
 plot_descriptives_scatter(t,list_subs,nSubs,...
-  'AbsErr',t.AbsErr,60,'task-PP');
+  'AbsErr',t.AbsErr,60,'task-AP');
 
 
 %% Write long format
 %% ------------------------------------------------------------------------
 close all
-writetable(t,fullfile(outDir,'data_propointing_long.csv'));
+writetable(t,fullfile(outDir,'data_antipointing_long.csv'));
 
 %% Convert to wide format
 %% ------------------------------------------------------------------------
-t = readtable(fullfile(outDir,'data_propointing_long.csv'));
+t = readtable(fullfile(outDir,'data_antipointing_long.csv'));
 %ignore target Side of space + Eccentricity (only for task difficulty)
 list_vars = {... %% matlab2019 udpated table name rules
 'Errorinmm',...
@@ -199,19 +199,17 @@ for v = 1:length(list_vars); varStr = list_vars{v};
 
   end
     
-  writetable(newT,fullfile(outDir,['data_openloop_wide_',varStr,'_',opStr,'.csv']));
+  writetable(newT,fullfile(outDir,['data_antipointing_wide_',varStr,'_',opStr,'.csv']));
 
 end
 
 %% Add AbsErr
-t = readtable('csv/data_propointing_wide_Errorinmm_mean.csv');
+t = readtable('csv/data_antipointing_wide_Errorinmm_mean.csv');
 t.Session1_mean_Errorinmm = abs(t.Session1_mean_Errorinmm);
 t.Session2_mean_Errorinmm = abs(t.Session2_mean_Errorinmm);
-t.Session3_mean_Errorinmm = abs(t.Session3_mean_Errorinmm);
-t.Session4_mean_Errorinmm = abs(t.Session4_mean_Errorinmm);
-t.Session5_mean_Errorinmm = abs(t.Session5_mean_Errorinmm);
 
-writetable(t,fullfile(outDir,'data_propointing_wide_Errorinmm_absolute_mean.csv'));
+
+writetable(t,fullfile(outDir,'data_antipointing_wide_Errorinmm_absolute_mean.csv'));
 
 close all
 
