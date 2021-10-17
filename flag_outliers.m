@@ -1,4 +1,4 @@
-function [t,uStdev] = flag_outliers(t,list_subs,nSubs,varStr)
+function [t,uStdev,lStdev] = flag_outliers(t,list_subs,nSubs,varStr)
 
 t.flag = repmat(false,height(t),1);
 
@@ -19,7 +19,11 @@ for s = 1:nSubs; ID = list_subs{s};
  
   switch varStr
     case 'RT'
+      % Remove if +/- Stdevs
       flagIdx = find ( t.MouseClick1RT(idx) > uStdev(s)  | t.MouseClick1RT(idx) < lStdev(s) );
+      % And remove if > 2sec
+      flagIdx2 = find ( t.MouseClick1RT(idx) > 2000 );
+      flagIdx = [flagIdx;flagIdx2];
     case 'AbsAcc'
       flagIdx = find ( t.AbsErr(idx) > uStdev(s)         | t.AbsErr(idx) < lStdev(s) );
   end

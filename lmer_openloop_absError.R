@@ -39,25 +39,19 @@ df = na.omit(df)
 # plot(lm_model)
 
 
-#Basic mixed Effects Model 
-#=====================
-lm_model = lmer(AbsErr ~ Session * PrismGroup + (1|ID_num) + (1|Target),
-              data = df); summary(lm_model)
-
-
 #Test for Main Effect of Session
 #=====================
-full = lmer(AbsErr ~ Session + (1|ID_num) + (1|Target),
+full = lmer(AbsErr ~ PrismGroup + Session + (1|ID_num) + (1|Target),
             data = df,
             REML = FALSE); summary(full)
-null = lmer(AbsErr ~ (1|ID_num) + (1|Target),
+null = lmer(AbsErr ~ PrismGroup + (1|ID_num) + (1|Target),
             data = df,
             REML = FALSE); summary(null)
 a = anova(null,full); a
 #Effect size (Rsuqared for fixed effects of model (cant get for particular effects))
 r.squaredGLMM(full)
 ## Pairwise posthoc
-model = lmer(AbsErr ~ Session + (1|ID_num) + (1|Target),
+model = lmer(AbsErr ~ PrismGroup + Session + (1|ID_num) + (1|Target),
              data = df); summary(model)
 em = emmeans(model, pairwise ~ Session,
              adjust = 'bonferroni'); em

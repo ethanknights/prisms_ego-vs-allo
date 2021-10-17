@@ -18,9 +18,9 @@ cMapCol = ... %better grayscale visibility
 
 figure('position',[0,0,1000,1000])
 %% Left prism group
-pG = 1; doErrorBars(xticklabels,t,pG,cMapCol,nSEMs);
+pG = 1; doErrorBars(t,pG,cMapCol,nSEMs);
 %% Right prism group
-pG = 2; doErrorBars(xticklabels,t,pG,cMapCol,nSEMs)
+pG = 2; doErrorBars(t,pG,cMapCol,nSEMs)
 
 %% other plot formatting
 title('Open Loop Pointing');
@@ -35,7 +35,7 @@ fig2svg(sprintf('images/%s_errorBar.svg',fN))
 
 %% Functions
 %% ------------------------------------------------------------------------
-  function doErrorBars(xticklabels,t,pG,cMapCol,nSEMs)
+  function doErrorBars(t,pG,cMapCol,nSEMs)
     
     for i = 1:nSess
       

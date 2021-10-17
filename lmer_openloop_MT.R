@@ -41,10 +41,10 @@ df = na.omit(df)
 
 #Test for Main Effect of Session
 #=====================
-full = lmer(MouseClick1RT ~ Session + (1|ID_num) + (1|Target),
+full = lmer(MouseClick1RT ~ PrismGroup + Session + (1|ID_num) + (1|Target),
             data = df,
             REML = FALSE); summary(full)
-null = lmer(MouseClick1RT ~ (1|ID_num) + (1|Target),
+null = lmer(MouseClick1RT ~ PrismGroup + (1|ID_num) + (1|Target),
             data = df,
             REML = FALSE); summary(null)
 a = anova(null,full); a

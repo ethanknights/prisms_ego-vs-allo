@@ -1,56 +1,72 @@
-function [d] = plot_task(t,taskStr)
+
+function plot_task_scatter(fN_PP,fN_AP,yLim,varStr,yLabelStr)
+
+t_PP = readtable(sprintf('csv/%s.csv',fN_PP));
+t_AP = readtable(sprintf('csv/%s.csv',fN_AP));
+subs = unique(t_PP.ID_num);
+nSubs = length(subs);
+
+tList = {t_PP,t_AP};
 
 close all
 
-subs = unique(t.subNum);
-nSubs = length(subs);
+
 %pGColour = {'red','blue'};
-cMapCol = lbmap(2,'RedBlue');
+%cMapCol = lbmap(2,'BrownBlue'); %red left, blue Right
 %cMapCol = [0 1 0; 0 1 1]; %green L, Blue R
+cMapCol = ... %better grayscale visibility
+  [0.4940 0.1840 0.5560; 0.3010 0.7450 0.9330]; %purple left, blue right
+alphaVal = 0.8;
 
 
+% for currT = 1:2
+%   eval(sprintf('t = tList{%d}',currT))
+
+[h_PP] = plotCurrTask(tList{1}, nSubs,cMapCol,alphaVal,yLim,'Propointing',varStr,yLabelStr);
+
+[h_AP] = plotCurrTask(tList{2}, nSubs,cMapCol,alphaVal,yLim,'Antipointing',varStr,yLabelStr);
+
+end
+
+%% ========================================================================
+function [h] = plotCurrTask(t, nSubs,cMapCol,alphaVal,yLim,titleStr,varStr,yLabelStr)
 figure('position',[0,0,1000,1000])
 
 for s = 1:nSubs
-  
-  idx_sub = t.subNum == s;
-  pG(s) = unique(t.PrismGroup(idx_sub));
-  
-  %% Sham
-  
-  for sess = 1:2
-    idx_sess = t.Session == sess;
-    idx = all( [ idx_sub, idx_sess], 2);
-  
-    d(s,sess) = mean(t.ErrorInMm(idx));
-  end
-  
-  plot(d(s,:),...
-    '-o','Color',cMapCol(pG(s),:), ...
+  pG = table2array(t(s,2));
+  d = table2array(t(s,3:end));
+  h = plot(d,...
+    '-o','Color',cMapCol(pG,:),...
     'LineWidth',2,'LineStyle','--', ...
-    'MarkerSize',18,'MarkerFaceColor',cMapCol(pG(s),:),'MarkerEdgeColor','black')
+    'MarkerSize',15,'MarkerFaceColor',cMapCol(pG,:),'MarkerEdgeColor','black');
+  setMarkerColor(h,cMapCol(pG,:),alphaVal);
+  pause(0.05)
   hold on
 end
 
+%% baseline line
+% if doBaseline
+%   line([0:23],[zeros(24)],...
+%     'col', [0,0,0], 'LineWidth', 2,'LineStyle','--');
+% end
 
 %% other plot formatting
-title(sprintf('%s - Accuracy',taskStr),'Interpreter', 'none');
-xlabel(['Session']);
-xlim([0 3]); set(gca,'XTick',[1:1:3]);
-xticklabels({'Pre-Prism','Post-Prism'});
-xtickangle(45)
-
-tmpLim = ylim;
-%ylim([tmpLim(1) - 0, tmpLim(2) + 0])
-ylim([-85,85])
-ylabel('Endpoint Error (mm)')
-
+title(titleStr,'Interpreter','None');
+xlabel('Session'); xlim([0.9 2.1]); set(gca,'XTick',[1:2.1]);
+xticklabels({'Pre-Prism','Post-Prism'}); % xtickangle(90);
+ylim([yLim(1) - 0, yLim(2) + 0]); ylabel(yLabelStr);
 set(gca,'box','off','color','none','TickDir','out','fontsize',18);
+ax = gca; ax.XColor = 'black'; ax.YColor = 'black'; ax.LineWidth = 2;
 
-%eval(sprintf('export_fig images/%s_matlab.tiff -transparent',taskStr))
-fig2svg(sprintf('images/%s_matlab.svg',taskStr))
+fig2svg(sprintf('images/task-%s_variable-%s_scatter.svg',titleStr,varStr))
 
-%% add prism group to d for later
-d(:,3) = pG;
+eval(...
+  sprintf(...
+  'export_fig ''images/task-%s_variable-%s_scatter.tiff'' -transparent',...
+  titleStr,varStr)...
+  )
+  
+ 
 
+end
 
