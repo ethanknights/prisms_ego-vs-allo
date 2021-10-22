@@ -46,7 +46,7 @@ t.test(tmpDf$PP, tmpDf$AP, paired = TRUE)
 bf10 = ttestBF(x = tmpDf$PP, tmpDf$AP); bf10
 bf01 = 1/bf10;bf01
 #plot
-pd = paired(tmpDf_PP,tmpDf_AP)
+tmpDf_PP = tmpDf$PP; tmpDf_AP = tmpDf$AP; pd = paired(tmpDf_PP,tmpDf_AP)
 plot(pd, type = "profile") + theme_bw()
 
   

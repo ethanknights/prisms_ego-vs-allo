@@ -13,12 +13,10 @@
 
 mkdir images
 clear
-set(0, 'DefaultFigureRenderer', 'painters'); %linux
-%set(0, 'DefaultFigureRenderer', 'openGL'); %mac
+%set(0, 'DefaultFigureRenderer', 'painters'); %linux
+set(0, 'DefaultFigureRenderer', 'openGL'); %mac
 
-do_rawData_OL = false;
-do_rawData_PP_AP = false;
-
+do_rawData_OL = true;
 %% Open Loop
 %% ========================================================================
 if do_rawData_OL
@@ -64,6 +62,7 @@ export_fig 'images/data_openloop_wide_MouseClick1RT_mean_scatterANDerrorBar.tiff
 
 %% Pro-/Anti-Point
 %% ========================================================================
+do_rawData_PP_AP = true;
 if do_rawData_PP_AP
   %grabRawData_PP_AP  %out: 'rawData.mat'
   clear; load rawData_PP_AP.mat; writeCsv_PP;  %out: t_PP + csv/data_propointing.csv
@@ -75,7 +74,7 @@ if do_rawData_PP_AP
   t1.task = ones(height(t1),1);    t1.taskStr = repmat({'Propointing'},height(t1),1);
   t2 = readtable('csv/data_antipointing_long.csv');
   t2.task = ones(height(t2),1)+1;  t2.taskStr = repmat({'Antipointing'},height(t2),1);
-  t = [t1;t2]
+  t = [t1;t2];
   writetable(t,'csv/data_task_long.csv');  % check = readtable('csv/data_task_long.csv')
   
   %% Create new 'data_taskDiff.csv' 
@@ -98,29 +97,27 @@ if do_rawData_PP_AP
   [a,b,c,d] = ttest(tmpD)
   clf; for s=1:length(tmpD); plot(tmpD(s,:)); hold on; end
   mean(tmpD)
+  
+  %% Plots
+  %% ------------------------------------------------------------------------
+  clear
+  
+  %% absolute error
+  % scatter
+  plot_task_scatter(...
+    'data_propointing_wide_Errorinmm_absolute_mean',...
+    'data_antipointing_wide_Errorinmm_absolute_mean',...
+    [-1,80],...
+    'AbsErr',...
+    'Absolute Error (mm)');
+  %errorbar
+  plot_task_errorBar(...
+    'data_propointing_wide_Errorinmm_absolute_mean',...
+    'data_antipointing_wide_Errorinmm_absolute_mean',...
+    [0,50],...
+    'AbsErr',...
+    'Absolute Error (mm)');
 end
-
-
-
-%% Plots
-%% ------------------------------------------------------------------------
-clear
-
-%% absolute error
-% scatter
-plot_task_scatter(...
-  'data_propointing_wide_Errorinmm_absolute_mean',...
-  'data_antipointing_wide_Errorinmm_absolute_mean',...
-  [-1,80],...
-  'AbsErr',...
-  'Absolute Error (mm)');
-%errorbar
-plot_task_errorBar(...
-  'data_propointing_wide_Errorinmm_absolute_mean',...
-  'data_antipointing_wide_Errorinmm_absolute_mean',...
-  [0,50],...
-  'AbsErr',...
-  'Absolute Error (mm)');
 
 % t_PP = readtable('csv/data_propointing.csv');
 % t_AP = readtable('csv/data_antipointing.csv');
