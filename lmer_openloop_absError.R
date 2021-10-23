@@ -89,6 +89,17 @@ null = lmer(AbsErr ~ Session + PrismGroup + (1|ID_num) + (1|Target),
             data = df,
             REML = FALSE); summary(null)
 anova(null,full)
+#Effect size (Rsuqared for fixed effects of model (cant get for particular effects))
+r.squaredGLMM(full)
+## Pairwise posthoc
+model = lmer(AbsErr ~ Session * PrismGroup + (1|ID_num) + (1|Target),
+             data = df); summary(model)
+em = emmeans(model, pairwise ~ Session * PrismGroup,
+             adjust = 'bonferroni'); em
+out = as.data.frame(em$contrasts)
+write.csv(out,'results/task-OL_meas-absErr_analysis-pairwise-sessionBYPrismgroup.csv')
+
+
 #Get Bayes Factor (following https://richarddmorey.github.io/BayesFactor/#mixed)
 full = anovaBF(AbsErr ~ Session * PrismGroup + ID_num + Target,
                whichRandom = c("ID_num","Target"),
@@ -103,6 +114,31 @@ bf01 = 1/bf10; bf01
 #============================================================================
 #Additional
 #============================================================================
+# Retest for session effect without redundant pre-sham/post-sham sessions (to check BIC)
+#=====================
+#subset
+#------
+tmpDf <- df[with(df, Session == 3 | Session == 4 | Session == 5),]
+tmpDf$Session = as.factor(tmpDf$Session)
+#Test for Main Effect of Session
+#------
+full = lmer(AbsErr ~ Session + (1|ID_num) + (1|Target),
+            data = tmpDf,
+            REML = FALSE); summary(full)
+null = lmer(AbsErr ~ (1|ID_num) + (1|Target),
+            data = tmpDf,
+            REML = FALSE); summary(null)
+a = anova(null,full); a
+#Effect size (Rsuqared for fixed effects of model (cant get for particular effects))
+r.squaredGLMM(full)
+## Pairwise posthoc
+model = lmer(AbsErr ~ PrismGroup + Session + (1|ID_num) + (1|Target),
+             data = tmpDf); summary(model)
+em = emmeans(model, pairwise ~ Session,
+             adjust = 'bonferroni'); em
+out = as.data.frame(em$contrasts)
+write.csv(out,'results/task-OL_meas-absErr_analysis-pairwise-session_onlyPrePost.csv')
+
 # Retest for prism effects when only considering post-/-late-prism sessions
 #=====================
 #subset

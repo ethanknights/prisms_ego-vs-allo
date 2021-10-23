@@ -13,8 +13,8 @@
 
 mkdir images
 clear
-%set(0, 'DefaultFigureRenderer', 'painters'); %linux
-set(0, 'DefaultFigureRenderer', 'openGL'); %mac
+set(0, 'DefaultFigureRenderer', 'painters'); %linux
+%set(0, 'DefaultFigureRenderer', 'openGL'); %mac
 
 do_rawData_OL = true;
 %% Open Loop
