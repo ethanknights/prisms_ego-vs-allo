@@ -32,8 +32,8 @@ end
 title('Open Loop Pointing');
 xlabel('Session'); xlim([0.75 5.25]); set(gca,'XTick',[1:1:5]);
 xticklabels({'Pre-Sham','Post-Sham','Pre-Prism','Post-Prism','Late-Prism'}); 
-xtickangle(90);
-ylim([yLim(1) - 0, yLim(2) + 0]); ylabel('Endpoint Error (mm)');
+xtickangle(-45);
+ylim([yLim(1) - 0, yLim(2) + 0]); ylabel('Absolute Error (mm)');
 set(gca,'box','off','color','none','TickDir','out','fontsize',18);
 ax = gca; ax.XColor = 'black'; ax.YColor = 'black'; ax.LineWidth = 2;
 

@@ -27,6 +27,10 @@ df$PrismGroup = as.factor(df$PrismGroup)
 df$Target = as.factor(df$Target)
 df$task = as.factor(df$task)
 df = na.omit(df)
+levels(df$Session) <- c('Pre','Post')       #make emmeans readable
+levels(df$task) <- c('Pro','Anti')          #make emmeans readable
+levels(df$PrismGroup) <- c('Left','Right')  #make emmeans readable
+
 
 #Test for Main Effect of Session
 #=====================
@@ -147,65 +151,99 @@ null = lmer(AbsErr ~ Session + task + PrismGroup + (1|ID_num) + (1|Target),
             data = df,
             REML = FALSE); summary(null)
 a = anova(null,full); a
-#Get Bayes Factor (following https://richarddmorey.github.io/BayesFactor/#mixed)
-full = anovaBF(AbsErr ~ Session * PrismGroup * task + ID_num + Target,
-               whichRandom = c("ID_num","Target"),
-               data = df)
-null = anovaBF(AbsErr ~ Session + PrismGroup + task + ID_num + Target,
-               whichRandom = c("ID_num","Target"),
-               data = df)
-bf10 = full[18] / null[8]
-bf01 = 1/bf10; bf01
-#effect size
-drop1(model,scope = c('Session:task:PrismGroup'),test='Chisq')
-
-#experimenal plots (ggeffects)
-model = lmer(AbsErr ~ Session * task * PrismGroup + (1|ID_num) + (1|Target),
-            data = df)
-dfPlot <- ggpredict(model, terms = c("Session", "task",'PrismGroup'))
-plot(dfPlot,connect.lines = TRUE,
-     colors = c('darkorchid4', 'darkturquoise'))
-#experimenal plots (ggeffects)
-model = lmer(AbsErr ~ Session * task * PrismGroup + (1|ID_num) + (1|Target),
-             data = df); 
-dfPlot <- ggpredict(model, terms = c('Session', "task",'PrismGroup'), type = 'random')
-p = plot(dfPlot,connect.lines = TRUE,
-     colors = c('darkorchid4', 'darkturquoise'),
-     ci.style = 'errorbar'); p
-#experimenal plots (emmeans with ggplot2)
-model = lmer(AbsErr ~ Session * task * PrismGroup + (1|ID_num) + (1|Target),
-             data = df)
-em = emmeans(model, pairwise ~ Session * task * PrismGroup,
-             adjust = 'none'); em #no correction (as will apply only for the 4 comparisons we care about (rather than 30!))
-emGrid = as.data.frame(em$emmeans)
-out=emGrid
-write.csv(out,'results/test.csv')
-# emGrid = em$contrasts; emGrid = emGrid@grid
-# SE = c(emGrid[2,],emGrid[14,])
-
-#if ignoring BIC and looking at fulleffect modl (e.g. AIC favours full, so maybe BIC penalised!)
+#Effect size (Rsuqared for fixed effects of model (cant get for particular effects))
 r.squaredGLMM(full)
-## Pairwise posthoc
+#Pairwise posthoc
 model = lmer(AbsErr ~ Session * task * PrismGroup + (1|ID_num) + (1|Target),
              data = df); summary(model)
 em = emmeans(model, pairwise ~ Session * task * PrismGroup,
-             adjust = 'none'); em #no correction (as will apply only for the 4 comparisons we care about (rather than 30!))
-#Session, task, prismGroup 
-# LEFT PRISM GROUP
-# propoint pre vs post = 			1 1 1 - 1 2 1 (row2)
-# 1 1 1 - 1 2 1  -29.367 1.35 Inf -21.753 <.0001 
-# antipoint pre vs post = 		1 2 1 - 2 2 1 (row14)
-# 1 2 1 - 2 2 1   -4.903 1.36 Inf  -3.603 0.0003 
-# RIGHT PRISM GROUP
-# propoint pre vs post = 			1 1 1 - 1 2 2 (row6)
-# 1 1 1 - 1 2 2  -32.239 5.15 Inf  -6.263 <.0001 
-# antipoint pre vs post = 		1 2 1 - 2 2 2 (row18)
-# 1 2 1 - 2 2 2   -2.738 5.15 Inf  -0.531 0.5953 
-# [.0001, .0003, .0001, .593]
-#0.05/4
+             adjust = 'bonferroni',
+             pbkrtest.limit = 7696); em
+out = as.data.frame(em$contrasts)
+write.csv(out,'results/task-PPAP_meas-absErr_analysis-pairwise-sessionBYtaskBYPrismgroup.csv')
+#Bayes ttest: Pre Anti Right - Post Anti Right
+adf = as.data.frame(aggregate(df$AbsErr,
+                              by = list(df$subNum, df$Session, df$task, df$PrismGroup),
+                              FUN = mean)); 
+colnames(adf) <- c('subNum','Session','task','PrismGroup','AbsErr')
+adf <- adf[with(adf, PrismGroup == 'Right'),]
+tmpA <- adf[with(adf, Session == 'Pre'),]
+tmpB <- adf[with(adf, Session == 'Post'),]
+tmpA <- tmpA[with(tmpA, task == 'Anti'),]; tmpB <- tmpB[with(tmpB, task == 'Anti'),]
+tmpA = tmpA$AbsErr; tmpB = tmpB$AbsErr # so convoluted
+bf10 = ttestBF(tmpA, tmpB, paired = TRUE); bf01 = 1 / bf10; bf01
+#Plot - Builtin
+model = lmer(AbsErr ~ Session * task * PrismGroup + (1|ID_num) + (1|Target),
+             data = df); 
+dfPlot <- ggpredict(model, terms = c('Session', 'PrismGroup','task'), type = 'random')
+p = plot(dfPlot,connect.lines = TRUE,
+         ci.style = 'errorbar',
+         colors = c('darkorchid4', 'darkturquoise')); p
+p = p +  # Format
+  scale_color_manual(values=c('darkorchid4', 'darkturquoise')) +
+  labs(x = "Session",
+       y = "Absolute Error (mm)",
+       title = 'Pro- & Anti-pointing - Accuracy') +
+  scale_y_continuous(breaks = seq(0, 100, 25), limits = c(-5, 100)) +
+  scale_x_continuous(labels = c('Pre-Sham','Post-Sham','Pre-Prism','Post-Prism'),breaks = c(1,2,3,4)) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(colour = 'black'),
+        axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.5),
+        axis.line = element_line(colour = 'black',size = 0.75), 
+        axis.ticks = element_line(colour = 'black', size = 0.75),
+        text = element_text(colour = 'black', size=18),
+        strip.background = element_blank(),
+        legend.position = 'none'); p
+ggsave(file.path(outImageDir,'PPAP-meas-absErr_stat-sessionBYtaskBYprismGroup.tiff'),
+       plot = p, width = 12, height = 14, units = 'cm', dpi = 300)
 
-#out = as.data.frame(em$contrasts)
-#write.csv(out,'results/task-PPAP_meas-absErr_analysis-pairwise-sessionBYtaskByPrismGroup.csv')
 
-#=================================================================================
-#Difference tests?
+
+#Plot - Custom (given up with geom_line)
+model = lmer(AbsErr ~ Session * task * PrismGroup + (1|ID_num) + (1|Target), data = df)
+gdf = ggemmeans(model, terms = c('Session','task','PrismGroup'), type = 'random')
+
+
+p = ggplot(data = gdf, aes(x = x, y = predicted, color = facet, group = interaction(x, group))) +
+  geom_point() +
+  geom_line(aes(group = )); p
+
+
+
+p = ggplot(data = gdf, aes(x = x, y = predicted, color = facet)) +
+  geom_point() +
+  geom_line(aes(group = gdf$x)); p
+
+
+p = ggplot(data = gdf, aes(x = x, y = predicted, color = facet)) +
+  geom_point() +
+  geom_line(group = gdf$x); p
+  
+            
+            
+          
+            size= 0.8, position = position_dodge(width = 0.4)) +
+  facet_wrap(~group); p
++
+  geom_errorbar(aes(ymin = gdf$predicted - gdf$std.error), ymax = gdf$predicted + gdf$std.error,
+    width = 0.8,
+    position = position_dodge(width = 0.4)); p
+
+p = p +  # Format
+  scale_color_manual(values=c('darkorchid4', 'darkturquoise')) +
+  labs(x = "Session",
+       y = "Absolute Error (mm)",
+       title = "Open Loop Pointing - Accuracy") +
+  scale_y_continuous(breaks = seq(0, 90, 15), limits = c(-1, 90)) +
+  scale_x_continuous(labels = c('Pre-Sham','Post-Sham','Pre-Prism','Post-Prism','Late-Prism'),breaks = c(1,2,3,4,5)) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(colour = 'black'),
+        axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.5),
+        axis.line = element_line(colour = 'black',size = 0.75), 
+        axis.ticks = element_line(colour = 'black', size = 0.75),
+        text = element_text(colour = 'black', size=18),
+        legend.position = 'none'); p
+
+

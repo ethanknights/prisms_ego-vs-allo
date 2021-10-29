@@ -28,7 +28,7 @@ end
 %% ------------------------------------------------------------------------
 %% directional error
 % scatter
-plot_OL_scatter('data_openloop_wide_Errorinmm_mean',[-80,80],true);
+plot_OL_scatter('data_openloop_wide_Errorinmm_mean',[-90,90],true);
 export_fig 'images/data_openloop_wide_Errorinmm_mean.tiff' -transparent
 % errorbar
 plot_OL_errorBar('data_openloop_wide_Errorinmm_mean',[-80,80]);
@@ -39,7 +39,7 @@ export_fig 'images/data_openloop_wide_Errorinmm_mean_scatterANDerrorBar.tiff' -t
 
 %% absolute error
 % scatter
-plot_OL_scatter('data_openloop_wide_Errorinmm_absolute_mean',[-1,80],false);
+plot_OL_scatter('data_openloop_wide_Errorinmm_absolute_mean',[-1,90],false);
 export_fig 'images/data_openloop_wide_Errorinmm_absolute_mean.tiff' -transparent
 % errorbar
 plot_OL_errorBar('data_openloop_wide_Errorinmm_absolute_mean',[-1,60]);
